@@ -1,0 +1,48 @@
+{
+  "schema": "veilpool.zk.negative-cases.v1",
+  "fixture": "membership-v1.json",
+  "note": "Each mutation is applied to the valid fixture. Expected is rejection unless explicitly marked accept. Executable cases are implemented in scripts/verify-negative.mjs and scripts/witness-negative.mjs.",
+  "verifier_cases": [
+    { "id": "NEG-V-01", "mutation": "chain_id + 1", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-02", "mutation": "pool_id xor 1", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-03", "mutation": "root xor 1", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-04", "mutation": "nullifier xor 1", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-05", "mutation": "recipient + 1", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-06", "mutation": "fee + 1", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-07", "mutation": "swap root and nullifier", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-08", "mutation": "root = p", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-09", "mutation": "a.x + 1", "layer": "groth16 verifier", "expected": "reject" },
+    { "id": "NEG-V-10", "mutation": "truncate c to one coordinate", "layer": "groth16 verifier", "expected": "reject" }
+  ],
+  "witness_cases": [
+    { "id": "NEG-W-01", "mutation": "secret + 1", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-02", "mutation": "root + 1", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-03", "mutation": "nullifier + 1", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-04", "mutation": "pathIndices[0] = 2", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-05", "mutation": "pathElements[0] xor 1", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-06", "mutation": "fee = 2^64", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-07", "mutation": "recipient = 2^160", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-08", "mutation": "pool_id = 2^248", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-09", "mutation": "chain_id = 2^64", "layer": "witness", "expected": "reject" },
+    { "id": "NEG-W-10", "mutation": "denomination = 0", "layer": "witness", "expected": "reject" }
+  ],
+  "wrapper_cases": [
+    { "id": "NEG-X-01", "mutation": "proof length 160 (MockVerifier shape)", "layer": "verifier wrapper", "expected": "reject" },
+    { "id": "NEG-X-02", "mutation": "proof length 255", "layer": "verifier wrapper", "expected": "reject" },
+    { "id": "NEG-X-03", "mutation": "proof length 257", "layer": "verifier wrapper", "expected": "reject" },
+    { "id": "NEG-X-04", "mutation": "pool_id top byte non-zero", "layer": "verifier wrapper", "expected": "reject" },
+    { "id": "NEG-X-05", "mutation": "root >= p", "layer": "verifier wrapper", "expected": "reject" },
+    { "id": "NEG-X-06", "mutation": "nullifier >= p", "layer": "verifier wrapper", "expected": "reject" },
+    { "id": "NEG-X-07", "mutation": "fee > uint64.max", "layer": "verifier wrapper", "expected": "reject" },
+    { "id": "NEG-X-08", "mutation": "block.chainid > uint64.max", "layer": "verifier wrapper", "expected": "reject" }
+  ],
+  "contract_cases": [
+    { "id": "NEG-C-01", "mutation": "nullifier already spent", "layer": "VeilPool", "expected": "revert NullifierAlreadySpent" },
+    { "id": "NEG-C-02", "mutation": "root not in history", "layer": "VeilPool", "expected": "revert UnknownRoot" },
+    { "id": "NEG-C-03", "mutation": "root younger than maturity", "layer": "VeilPool", "expected": "revert MaturityNotReached" },
+    { "id": "NEG-C-04", "mutation": "fee above pool cap", "layer": "VeilPool", "expected": "revert FeeTooHigh" },
+    { "id": "NEG-C-05", "mutation": "recipient zero", "layer": "VeilPool", "expected": "revert InvalidRecipient" },
+    { "id": "NEG-C-06", "mutation": "pool paused", "layer": "VeilPool", "expected": "revert PoolIsPaused" },
+    { "id": "NEG-C-07", "mutation": "reorg removes the spend", "layer": "indexer", "expected": "reconcile; note may become unspent" }
+  ]
+}

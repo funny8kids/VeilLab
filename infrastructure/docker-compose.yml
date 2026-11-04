@@ -1,0 +1,47 @@
+# VeilPool local infrastructure
+# Testnet/local only. No mainnet RPC or production keys.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: veilpool
+      POSTGRES_PASSWORD: veilpool_dev
+      POSTGRES_DB: veilpool
+    ports:
+      - "5432:5432"
+    volumes:
+      - veilpool_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veilpool -d veilpool"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - veilpool_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  anvil:
+    image: ghcr.io/foundry-rs/foundry:stable
+    command: ["anvil", "--host", "0.0.0.0", "--chain-id", "31337"]
+    ports:
+      - "8545:8545"
+    healthcheck:
+      test: ["CMD-SHELL", "cast chain-id --rpc-url http://127.0.0.1:8545"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  veilpool_pg:
+  veilpool_redis:

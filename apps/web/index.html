@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="VeilPool is a testnet-only private pool demo with fixed denominations, client-side secret notes, mock proofs and compliance-aware flows."
+    />
+    <meta name="robots" content="noindex" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23080a0d'/%3E%3Cpath d='M12 3l7 4v10l-7 4-7-4V7z' fill='none' stroke='%235eead4' stroke-width='1.6'/%3E%3C/svg%3E"
+    />
+    <title>VeilPool · Private Pool</title>
+    <script>
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var queryTheme = params.get("theme");
+          var theme = queryTheme || localStorage.getItem("veilpool.theme");
+          if (theme === "light" || theme === "dark") {
+            document.documentElement.dataset.theme = theme;
+          }
+          var queryLang = params.get("lang");
+          if (queryLang === "zh") {
+            document.documentElement.lang = "zh-CN";
+          }
+        } catch (error) {
+          /* Storage and URL parsing are optional. */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>VeilPool requires JavaScript. This is a testnet-only local demo.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

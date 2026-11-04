@@ -1,0 +1,23 @@
+# Foundry build artifacts
+out/
+cache/
+broadcast/
+
+# Dependencies (installed with `forge install`)
+lib/
+
+# Local deployment records
+deployments/
+
+# Local secrets / environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,5 @@
+indexer.db
+indexer.db-wal
+indexer.db-shm
+*.db-wal
+*.db-shm

@@ -1,0 +1,29 @@
+{
+  "name": "@veilpool/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "VeilPool testnet-only private pool UI (local demo / mock proof).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "generate:poseidon": "node scripts/generate-poseidon-constants.mjs"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.5",
+    "snarkjs": "0.7.6"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}

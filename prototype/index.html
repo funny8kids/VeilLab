@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="VeilPool is a testnet-only private pool / mixer prototype with fixed denominations, client-side notes, non-custodial relayers and compliance-aware flows.">
+  <title>VeilPool · Private Pool</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23080a0d'/%3E%3Cpath d='M12 3l7 4v10l-7 4-7-4V7z' fill='none' stroke='%235eead4' stroke-width='1.6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <symbol id="i-logo" viewBox="0 0 24 24"><path d="M12 2.7 20 7.2v9.6L12 21.3 4 16.8V7.2z"/><path d="M8.4 8.5 12 15.1l3.6-6.6"/><circle cx="12" cy="17.7" r=".8" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2" class="f"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v10.4"/><path d="m8.1 10 3.9 3.9 3.9-3.9"/><path d="M4.5 16.5v2.1a1.9 1.9 0 0 0 1.9 1.9h11.2a1.9 1.9 0 0 0 1.9-1.9v-2.1"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 20.5V10.1"/><path d="m8.1 14 3.9-3.9 3.9 3.9"/><path d="M4.5 7.5V5.4a1.9 1.9 0 0 1 1.9-1.9h11.2a1.9 1.9 0 0 1 1.9 1.9v2.1"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path class="f" d="m12 3.1 8.3 4.4L12 11.9 3.7 7.5z"/><path d="m12 3.1 8.3 4.4L12 11.9 3.7 7.5z"/><path d="m4.1 12.1 7.9 4.2 7.9-4.2"/><path d="m4.1 16.4 7.9 4.2 7.9-4.2"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3.5 12h3.1l2.2-6.4 4.4 12.8 2.2-6.4h5.1"/><circle cx="18.5" cy="12" r="1.1" class="f"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5.2" r="2"/><circle cx="18" cy="7.2" r="2"/><circle cx="6" cy="18.8" r="2"/><path d="M6 7.2v9.6M8 11h4.6a5.4 5.4 0 0 0 5.4-3.8"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path class="f" d="M12 3.2 19 6.2v5.4c0 4.3-2.8 7.5-7 9.4-4.2-1.9-7-5.1-7-9.4V6.2z"/><path d="M12 3.2 19 6.2v5.4c0 4.3-2.8 7.5-7 9.4-4.2-1.9-7-5.1-7-9.4V6.2z"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7.5h9.2M17.2 7.5h2.8M4 16.5h2.8M10.8 16.5H20"/><circle cx="15" cy="7.5" r="2.2"/><circle cx="8.6" cy="16.5" r="2.2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.6" cy="10.6" r="6.4"/><path d="m15.2 15.2 5.3 5.3"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9.2a6 6 0 0 0-12 0c0 6.8-2.8 6.8-2.8 8.8h17.6c0-2-2.8-2-2.8-8.8"/><path d="M10 21h4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4.8v14.4M4.8 12h14.4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.8 12.4 4.8 4.8L19.2 6.8"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.1 12.2 2.6 2.6 5.2-5.6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.7 17.1A2 2 0 0 0 4.4 20h15.2a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.2M12 16.7v.2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.8" y="10" width="14.4" height="10.8" rx="2.4"/><path d="M8.2 10V7.2a3.8 3.8 0 0 1 7.6 0V10"/><path d="M12 14v3"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6.2 3.2h7.6l4 4v13.6H6.2z"/><path d="M13.8 3.2v4.6h4.2M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.2v5.1l3.5 2"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8.2" cy="12" r="3.8"/><path d="M12 12h8.2M17 12v3.2M19.8 12v2.2"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.8 11a7.9 7.9 0 1 0-1.4 6.4"/><path d="M19.8 5.2V11h-5.8"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 9.2 5 5 5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v2M12 19.4v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2.6 12h2M19.4 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.4A8.4 8.4 0 0 1 9.6 4 8.4 8.4 0 1 0 20 14.4z"/></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path class="f" d="M12 3.2 19 6.2v5.4c0 4.3-2.8 7.5-7 9.4-4.2-1.9-7-5.1-7-9.4V6.2z"/><path d="M12 3.2 19 6.2v5.4c0 4.3-2.8 7.5-7 9.4-4.2-1.9-7-5.1-7-9.4V6.2z"/><path d="m8.9 12 2.1 2.1 4.2-4.5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.2" y="8.2" width="11.6" height="11.6" rx="2.2"/><path d="M15.8 8.2V6.2a2.2 2.2 0 0 0-2.2-2.2H6.2A2.2 2.2 0 0 0 4 6.2v7.4a2.2 2.2 0 0 0 2.2 2.2h2"/></symbol>
+  <symbol id="i-eth" viewBox="0 0 24 24"><path class="f" d="M12 2.8 6 12.1l6 3.6 6-3.6z"/><path d="M12 2.8 6 12.1l6 3.6 6-3.6z"/><path d="m6 13.3 6 8 6-8"/></symbol>
+  <symbol id="i-usdc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M14.6 8.9c-.6-.6-1.5-.9-2.6-.9-1.5 0-2.6.7-2.6 1.9 0 2.8 5.4 1.4 5.4 4.3 0 1.2-1.1 2-2.7 2-1.3 0-2.3-.4-3-1.1"/></symbol>
+  <symbol id="i-btc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 7.4h4a2.2 2.2 0 0 1 0 4.4h-4zM9.5 11.8h4.6a2.2 2.2 0 0 1 0 4.4H9.5zM10.8 5.8v12.4M13.2 5.8v12.4"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg class="ico"><use href="#i-logo"></use></svg></div>
+      <div><div class="brand-name">VeilLab</div><span class="brand-sub">Private Pool</span></div>
+    </div>
+
+    <div class="workspace" data-toast="Workspace switcher is a prototype interaction.">
+      <div class="workspace-avatar">VP</div>
+      <div class="workspace-meta"><div class="workspace-name">VeilPool</div><div class="workspace-sub" data-zh="测试网工作区">Testnet workspace</div></div>
+      <svg class="ico"><use href="#i-chevron"></use></svg>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-label" data-zh="资金池">Pool</div>
+      <a class="nav-item active" data-screen="overview" href="?screen=overview"><svg class="ico"><use href="#i-grid"></use></svg><span data-zh="总览">Overview</span></a>
+      <a class="nav-item" data-screen="deposit" href="?screen=deposit"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="存入">Deposit</span></a>
+      <a class="nav-item" data-screen="withdraw" href="?screen=withdraw"><svg class="ico"><use href="#i-upload"></use></svg><span data-zh="提取">Withdraw</span></a>
+
+      <div class="nav-label" data-zh="流动性">Liquidity</div>
+      <a class="nav-item" data-screen="pools" href="?screen=pools"><svg class="ico"><use href="#i-layers"></use></svg><span data-zh="资金池">Pools</span></a>
+      <a class="nav-item" data-screen="activity" href="?screen=activity"><svg class="ico"><use href="#i-activity"></use></svg><span data-zh="活动">Activity</span></a>
+      <a class="nav-item" data-screen="relayers" href="?screen=relayers"><svg class="ico"><use href="#i-branch"></use></svg><span data-zh="中继">Relayers</span></a>
+
+      <div class="nav-label" data-zh="信任">Trust</div>
+      <a class="nav-item" data-screen="compliance" href="?screen=compliance"><svg class="ico"><use href="#i-shield-check"></use></svg><span data-zh="合规">Compliance</span></a>
+      <a class="nav-item" data-screen="settings" href="?screen=settings"><svg class="ico"><use href="#i-settings"></use></svg><span data-zh="设置">Settings</span></a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="status-line"><span class="dot ok"></span><span data-zh="池子运行正常">Pools operational</span></div>
+      <div class="version">v0.2.0 · testnet only</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumbs"><span>VeilPool</span><span class="sep">/</span><strong id="crumb-current">Overview</strong></div>
+      <div class="top-actions">
+        <button type="button" class="search" data-toast="Command palette is a prototype interaction."><svg class="ico" style="width:13px;height:13px"><use href="#i-search"></use></svg><span data-zh="搜索资金池、活动、中继…">Search pools, activity, relayers…</span><kbd>⌘K</kbd></button>
+        <div class="seg" id="lang-toggle" role="group" aria-label="Language"><button data-lang="en" class="active" aria-label="English" aria-pressed="true">EN</button><button data-lang="zh" aria-label="中文" aria-pressed="false">中</button></div>
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" data-toast="Theme toggled."><svg class="ico toggle-icon sun"><use href="#i-sun"></use></svg><svg class="ico toggle-icon moon"><use href="#i-moon"></use></svg></button>
+        <span class="badge testnet"><span class="dot"></span><span data-zh="仅测试网">TESTNET ONLY</span></span>
+        <div class="avatar">VP</div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ================= OVERVIEW ================= -->
+      <section class="screen active" id="overview" data-title="Overview" data-title-zh="总览">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow" data-zh="隐私混币器 · 测试网">Privacy mixer · Testnet</div>
+            <h1 data-zh="隐私池">Private pool</h1>
+            <p class="page-sub" data-zh="面向测试网资产的隐私转账。固定面额、匿名集、可选中继，并内置合规检查。">Private transfers for testnet assets. Fixed denominations, anonymity sets, optional relayers and built-in compliance checks.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn" data-screen="withdraw"><svg class="ico"><use href="#i-upload"></use></svg><span data-zh="提取">Withdraw</span></button>
+            <button class="btn btn-primary" data-screen="deposit"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="存入">Deposit</span></button>
+          </div>
+        </div>
+
+        <div class="card stat-strip">
+          <div class="stat"><div class="stat-label" data-zh="池子流动性">Pool liquidity</div><div class="stat-row"><div class="stat-value">4.82M<small>tUSD</small></div><svg class="spark" viewBox="0 0 74 28"><polygon class="area" points="0,28 0,21 10,19 20,22 30,14 40,16 50,9 60,11 70,5 74,7 74,28"/><polyline points="0,21 10,19 20,22 30,14 40,16 50,9 60,11 70,5 74,7"/></svg></div><div class="stat-delta"><span class="up">+6.2%</span> <span data-zh="本周">this week</span></div></div>
+          <div class="stat"><div class="stat-label" data-zh="匿名集">Anonymity set</div><div class="stat-row"><div class="stat-value">1,284</div><svg class="spark" viewBox="0 0 74 28"><polygon class="area" points="0,28 0,23 10,20 20,21 30,15 40,17 50,11 60,12 70,7 74,8 74,28"/><polyline points="0,23 10,20 20,21 30,15 40,17 50,11 60,12 70,7 74,8"/></svg></div><div class="stat-delta"><span class="up">+18.4%</span> <span data-zh="本周">this week</span></div></div>
+          <div class="stat"><div class="stat-label" data-zh="24h 交易量">24h volume</div><div class="stat-row"><div class="stat-value">182K</div></div><div class="stat-delta"><span data-zh="42 笔存入 · 31 笔提取">42 deposits · 31 withdrawals</span></div></div>
+          <div class="stat"><div class="stat-label" data-zh="在线中继">Relayers online</div><div class="stat-row"><div class="stat-value">6<small data-zh="在线">online</small></div></div><div class="stat-delta"><span data-zh="平均费率 0.28%">avg fee 0.28%</span></div></div>
+        </div>
+
+        <div class="grid main-grid" style="margin-bottom:14px">
+          <div class="card span-7">
+            <div class="card-h"><div class="card-title" data-zh="匿名集增长">Anonymity set growth</div><div class="card-sub" data-zh="最近 8 周">last 8 weeks</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="健康">healthy</span></span></div></div>
+            <div class="card-b">
+              <div class="chart-kpi"><strong>1,284</strong><span>+18.4%</span><span class="faint" style="font-size:9px" data-zh="匿名集成员">anonymity set</span></div>
+              <div class="chart-wrap">
+                <svg class="chart" viewBox="0 0 720 190" role="img" aria-label="Anonymity set growth">
+                  <defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity=".18"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+                  <line class="gridline" x1="0" y1="40" x2="720" y2="40"/><line class="gridline" x1="0" y1="85" x2="720" y2="85"/><line class="gridline" x1="0" y1="130" x2="720" y2="130"/><line class="gridline" x1="0" y1="175" x2="720" y2="175"/>
+                  <path class="area" d="M0,152 C40,148 58,140 90,134 C122,128 140,132 180,120 C220,108 240,114 280,100 C320,86 340,94 380,80 C420,66 442,72 480,60 C518,48 540,56 580,44 C620,32 650,40 690,28 L720,24 L720,190 L0,190 Z"/>
+                  <path class="line" d="M0,152 C40,148 58,140 90,134 C122,128 140,132 180,120 C220,108 240,114 280,100 C320,86 340,94 380,80 C420,66 442,72 480,60 C518,48 540,56 580,44 C620,32 650,40 690,28 L720,24"/>
+                  <circle class="dot" cx="720" cy="24" r="4"/>
+                  <text class="axis" x="0" y="188">W1</text><text class="axis" x="100" y="188">W2</text><text class="axis" x="200" y="188">W3</text><text class="axis" x="300" y="188">W4</text><text class="axis" x="400" y="188">W5</text><text class="axis" x="500" y="188">W6</text><text class="axis" x="600" y="188">W7</text><text class="axis" x="690" y="188">W8</text>
+                </svg>
+              </div>
+              <div class="chart-legend"><span><i style="background:var(--accent)"></i><span data-zh="匿名集成员">Anonymity set</span></span><span data-zh="更大的匿名集意味着更强的隐私">A larger set means stronger privacy</span></div>
+            </div>
+          </div>
+
+          <div class="card span-5">
+            <div class="card-h"><div class="card-title" data-zh="合规状态">Compliance status</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="强制执行">enforced</span></span></div></div>
+            <div class="card-b pad">
+              <div class="check-list">
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="制裁名单筛查已通过">Sanctions screening passed</span></div>
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="司法辖区允许测试网访问">Jurisdiction allowed for testnet</span></div>
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="每日存入额度可用 72%">Daily deposit limit 72% available</span></div>
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="最近审计 2026-10-31">Last audit 2026-10-31</span></div>
+              </div>
+              <div class="approve" style="margin-top:13px"><div class="t" data-zh="合规模式">Compliance mode</div><div class="v" data-zh="风险检查在存入与提取时执行。仅测试网资产。">Risk checks run on deposit and withdrawal. Testnet assets only.</div></div>
+              <button class="btn" style="width:100%;margin-top:11px" data-screen="compliance"><span data-zh="查看合规策略">View compliance policy</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid main-grid" style="margin-bottom:14px">
+          <div class="card span-7">
+            <div class="card-h"><div class="card-title" data-zh="活跃资金池">Active pools</div><div class="right"><span class="link" data-screen="pools" data-zh="查看全部">View all</span></div></div>
+            <div class="card-b" style="padding-top:0">
+              <div class="row" style="padding-top:8px"><div class="asset-icon eth"><svg class="ico"><use href="#i-eth"></use></svg></div><div class="row-main"><div class="row-title">ETH · 0.1</div><div class="row-sub" data-zh="固定面额 · 30 分钟成熟期">Fixed denomination · 30m maturity</div></div><span class="row-meta">842 <span data-zh="匿名集">set</span></span><span class="badge ok"><span class="dot"></span><span data-zh="活跃">active</span></span></div>
+              <div class="row"><div class="asset-icon eth"><svg class="ico"><use href="#i-eth"></use></svg></div><div class="row-main"><div class="row-title">ETH · 1.0</div><div class="row-sub" data-zh="固定面额 · 2 小时成熟期">Fixed denomination · 2h maturity</div></div><span class="row-meta">316 <span data-zh="匿名集">set</span></span><span class="badge ok"><span class="dot"></span><span data-zh="活跃">active</span></span></div>
+              <div class="row"><div class="asset-icon usdc"><svg class="ico"><use href="#i-usdc"></use></svg></div><div class="row-main"><div class="row-title">USDC · 100</div><div class="row-sub" data-zh="固定面额 · 30 分钟成熟期">Fixed denomination · 30m maturity</div></div><span class="row-meta">124 <span data-zh="匿名集">set</span></span><span class="badge ok"><span class="dot"></span><span data-zh="活跃">active</span></span></div>
+              <div class="row"><div class="asset-icon usdc"><svg class="ico"><use href="#i-usdc"></use></svg></div><div class="row-main"><div class="row-title">USDC · 1,000</div><div class="row-sub" data-zh="固定面额 · 2 小时成熟期">Fixed denomination · 2h maturity</div></div><span class="row-meta">48 <span data-zh="匿名集">set</span></span><span class="badge warn"><span class="dot"></span><span data-zh="匿名集偏小">low set</span></span></div>
+            </div>
+          </div>
+
+          <div class="card span-5">
+            <div class="card-h"><div class="card-title" data-zh="最近活动">Recent activity</div><div class="right"><span class="badge muted" data-zh="仅本人可见">private to you</span></div></div>
+            <div class="card-b">
+              <div class="timeline">
+                <div class="tl-item"><span class="tl-dot done"></span><div class="tl-title" data-zh="存入 0.1 ETH">Deposit 0.1 ETH</div><div class="tl-sub" data-zh="ETH · 0.1 · 已确认">ETH · 0.1 · confirmed</div><div class="tl-time">2m ago</div></div>
+                <div class="tl-item"><span class="tl-dot done"></span><div class="tl-title" data-zh="提取 1.0 ETH">Withdraw 1.0 ETH</div><div class="tl-sub" data-zh="中继 Relay-01 · 已确认">Relayer Relay-01 · confirmed</div><div class="tl-time">18m ago</div></div>
+                <div class="tl-item"><span class="tl-dot active"></span><div class="tl-title" data-zh="存入 100 USDC">Deposit 100 USDC</div><div class="tl-sub" data-zh="等待区块确认">Waiting for confirmation</div><div class="tl-time">now</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><div class="card-title" data-zh="一次隐私转账如何完成">How a private transfer works</div><div class="right"><span class="badge info"><span data-zh="3 步">3 steps</span></span></div></div>
+          <div class="card-b">
+            <div class="how-grid">
+              <div class="how-step"><div class="how-num">01</div><div class="how-title" data-zh="存入固定面额">Deposit a fixed denomination</div><div class="how-text" data-zh="资金进入对应资产与面额的池子。系统生成只有你能保存的 secret note。">Funds enter the pool for that asset and denomination. A secret note is generated for you to store.</div></div>
+              <div class="how-step"><div class="how-num">02</div><div class="how-title" data-zh="等待匿名集">Let the anonymity set grow</div><div class="how-text" data-zh="等待成熟期，并让更多同面额存入混入。更大的匿名集意味着更强的隐私。">Wait for maturity and for more same-denomination deposits to join. A larger set means stronger privacy.</div></div>
+              <div class="how-step"><div class="how-num">03</div><div class="how-title" data-zh="用 Note 提取">Withdraw with the note</div><div class="how-text" data-zh="生成证明，选择中继提交提取。中继看不到 note，也无法控制资金。">Generate a proof and use a relayer to submit the withdrawal. The relayer cannot see the note or control funds.</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= DEPOSIT ================= -->
+      <section class="screen" id="deposit" data-title="Deposit" data-title-zh="存入">
+        <div class="page-head">
+          <div><div class="eyebrow" data-zh="资金池 · 存入">Pool · Deposit</div><h1 data-zh="存入">Deposit</h1><p class="page-sub" data-zh="选择池子、生成并备份 note，然后把测试资产存入固定面额池。">Choose a pool, generate and back up a note, then deposit test assets into a fixed-denomination pool.</p></div>
+          <div class="page-actions"><span class="badge testnet"><span class="dot"></span><span data-zh="仅测试网">TESTNET ONLY</span></span></div>
+        </div>
+        <div class="stepbar"><div class="step active"><b>1</b><span data-zh="选择池子">Select pool</span></div><span class="step-sep"></span><div class="step"><b>2</b><span data-zh="生成 Note">Generate note</span></div><span class="step-sep"></span><div class="step"><b>3</b><span data-zh="确认存入">Confirm deposit</span></div><span class="step-sep"></span><div class="step"><b>4</b><span data-zh="等待成熟">Wait for maturity</span></div></div>
+
+        <div class="grid main-grid">
+          <div class="card span-7">
+            <div class="card-h"><div class="card-title" data-zh="选择资金池">Select a pool</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="合规检查通过">compliance passed</span></span></div></div>
+            <div class="card-b">
+              <div class="choice-grid">
+                <div class="choice active"><div class="t">ETH · 0.1</div><div class="s" data-zh="匿名集 842 · 30 分钟">Set 842 · 30m</div></div>
+                <div class="choice"><div class="t">ETH · 1.0</div><div class="s" data-zh="匿名集 316 · 2 小时">Set 316 · 2h</div></div>
+                <div class="choice"><div class="t">USDC · 100</div><div class="s" data-zh="匿名集 124 · 30 分钟">Set 124 · 30m</div></div>
+                <div class="choice"><div class="t">USDC · 1,000</div><div class="s" data-zh="匿名集 48 · 2 小时">Set 48 · 2h</div></div>
+              </div>
+
+              <div style="margin-top:15px" class="field">
+                <label for="deposit-amount" data-zh="存入金额">Deposit amount</label>
+                <div class="input-row"><input id="deposit-amount" class="input" style="flex:1" value="0.1" readonly><span class="input-suffix">ETH</span></div>
+                <div class="card-note" style="margin-top:5px" data-zh="固定面额。不要拆分或合并，否则会削弱隐私。">Fixed denomination. Do not split or merge, or privacy weakens.</div>
+              </div>
+
+              <div class="field">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><label style="margin:0" data-zh="你的 secret note">Your secret note</label><span class="badge warn" style="height:18px"><span data-zh="只显示一次">shown once</span></span></div>
+                <div class="note-box">veilnote1q9x7m2k4v8pz3n6r5t0w2s9d8f7g6h5j4k3l2m1n0p9q8r7s6t5u4v3w2x1y0z</div>
+                <div class="note-warning" style="margin-top:8px"><svg class="ico"><use href="#i-alert"></use></svg><span data-zh="这是提取资金的唯一凭证。丢失无法找回；泄露意味着任何人都能提取。">This is the only credential to withdraw. If lost, funds cannot be recovered. If leaked, anyone can withdraw.</span></div>
+                <div style="display:flex;gap:7px;margin-top:9px"><button class="btn btn-sm"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="下载加密备份">Download encrypted backup</span></button><button class="btn btn-sm"><svg class="ico"><use href="#i-copy"></use></svg><span data-zh="复制">Copy</span></button></div>
+              </div>
+
+              <div class="field" style="margin-top:14px">
+                <label data-zh="存入地址">Deposit address</label>
+                <div class="address-box">0x7a3f9c2d8e1b4a6f0c5d9e2b7a1f3c8d6e4b0a29</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="span-5" style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="存入摘要">Deposit summary</div></div>
+              <div class="card-b pad">
+                <div class="summary">
+                  <div class="summary-row"><span data-zh="资金池">Pool</span><span class="v">ETH · 0.1</span></div>
+                  <div class="summary-row"><span data-zh="存入金额">Amount</span><span class="v">0.1 ETH</span></div>
+                  <div class="summary-row"><span data-zh="协议费">Protocol fee</span><span class="v">0.003 ETH</span></div>
+                  <div class="summary-row"><span data-zh="预计成熟">Maturity</span><span class="v" data-zh="30 分钟">30 minutes</span></div>
+                  <div class="summary-row"><span data-zh="匿名集">Anonymity set</span><span class="v">842</span></div>
+                  <div class="summary-row total"><span data-zh="实际支出">You pay</span><span class="v">0.103 ETH</span></div>
+                </div>
+                <label class="check" style="margin:12px 0 8px"><input type="checkbox" id="backup-confirm" style="accent-color:var(--accent);width:13px;height:13px"><span data-zh="我已导出加密备份，并确认 note 不会再次显示">I exported the encrypted backup and understand the note is shown once</span></label>
+                <button class="btn btn-primary" id="confirm-deposit" style="width:100%;margin-top:0" disabled data-toast="Deposit is a prototype interaction. No funds move."><span data-zh="确认存入">Confirm deposit</span></button>
+                <div class="card-note" style="margin-top:9px" data-zh="存入后不会立即出现在公开活动流中。请先备份 note。">Your deposit will not appear in a public activity feed. Back up the note first.</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="隐私提示">Privacy tips</div><div class="right"><span class="badge info"><span data-zh="重要">important</span></span></div></div>
+              <div class="card-b">
+                <div class="guard"><svg class="ico"><use href="#i-lock"></use></svg><span data-zh="不要截图或发送 note 到聊天工具">Never screenshot or send the note to a chat app</span></div>
+                <div class="guard"><svg class="ico"><use href="#i-lock"></use></svg><span data-zh="使用独立浏览器窗口完成存入与提取">Use a separate browser window for deposit and withdrawal</span></div>
+                <div class="guard"><svg class="ico"><use href="#i-lock"></use></svg><span data-zh="等待更长时间再提取，降低时间关联">Wait longer before withdrawing to reduce timing correlation</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= WITHDRAW ================= -->
+      <section class="screen" id="withdraw" data-title="Withdraw" data-title-zh="提取">
+        <div class="page-head">
+          <div><div class="eyebrow" data-zh="资金池 · 提取">Pool · Withdraw</div><h1 data-zh="提取">Withdraw</h1><p class="page-sub" data-zh="用 note 生成证明，通过中继提交提取。note 在本地处理，不会上传。">Generate a proof from your note and submit through a relayer. The note is processed locally and never uploaded.</p></div>
+          <div class="page-actions"><span class="badge testnet"><span class="dot"></span><span data-zh="仅测试网">TESTNET ONLY</span></span></div>
+        </div>
+        <div class="stepbar"><div class="step active"><b>1</b><span data-zh="输入 Note">Paste note</span></div><span class="step-sep"></span><div class="step"><b>2</b><span data-zh="选择中继">Choose relayer</span></div><span class="step-sep"></span><div class="step"><b>3</b><span data-zh="生成证明">Generate proof</span></div><span class="step-sep"></span><div class="step"><b>4</b><span data-zh="到账">Receive</span></div></div>
+
+        <div class="grid main-grid">
+          <div class="card span-7">
+            <div class="card-h"><div class="card-title" data-zh="提取详情">Withdrawal details</div><div class="right"><span class="badge info"><span class="dot"></span><span data-zh="本地处理">local only</span></span></div></div>
+            <div class="card-b">
+              <div class="field">
+                <label for="secret-note" data-zh="Secret note">Secret note</label>
+                <textarea id="secret-note" class="textarea" data-zh-placeholder="粘贴你的 secret note…" placeholder="Paste your secret note…">veilnote1q9x7m2k4v8pz3n6r5t0w2s9d8f7g6h5j4k3l2m1n0p9q8r7s6t5u4v3w2x1y0z</textarea>
+                <div class="card-note" style="margin-top:5px" data-zh="Note 只在此浏览器中解析。刷新页面后不会保留。">The note is parsed only in this browser. It is not retained after refresh.</div>
+              </div>
+
+              <div class="field">
+                <label for="recipient-address" data-zh="收款地址">Recipient address</label>
+                <input id="recipient-address" class="input" value="0x4d2a8f1c7e9b3a6d0f5c8e2b7a1d4f6c9e3b0a28">
+                <div class="card-note" style="margin-top:5px" data-zh="使用与存入无关的新地址，降低地址关联。">Use a fresh address unrelated to the deposit to reduce address linkage.</div>
+              </div>
+
+              <div class="field">
+                <label data-zh="选择中继">Choose relayer</label>
+                <div class="relayer-row"><div class="relayer-avatar">R1</div><div class="relayer-main"><div class="relayer-name">Relay-01</div><div class="relayer-sub" data-zh="支持 ETH / USDC · 99.98% 在线">ETH / USDC · 99.98% uptime</div></div><span class="relayer-metric">0.24%</span><span class="badge ok"><span class="dot"></span><span data-zh="推荐">best</span></span></div>
+                <div class="relayer-row"><div class="relayer-avatar">R2</div><div class="relayer-main"><div class="relayer-name">Relay-02</div><div class="relayer-sub" data-zh="低延迟 · 支持 ETH">Low latency · ETH</div></div><span class="relayer-metric">0.30%</span><span class="badge info"><span data-zh="低延迟">fast</span></span></div>
+                <div class="relayer-row"><div class="relayer-avatar">R3</div><div class="relayer-main"><div class="relayer-name">Relay-03</div><div class="relayer-sub" data-zh="社区中继 · 支持全部池子">Community · all pools</div></div><span class="relayer-metric">0.35%</span><span class="badge muted"><span data-zh="社区">community</span></span></div>
+              </div>
+
+              <button class="btn btn-primary" style="width:100%;margin-top:4px" data-toast="Proof generation is a prototype interaction."><svg class="ico"><use href="#i-shield-check"></use></svg><span data-zh="生成证明并提取">Generate proof &amp; withdraw</span></button>
+            </div>
+          </div>
+
+          <div class="span-5" style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="提取摘要">Withdrawal summary</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="合规">compliant</span></span></div></div>
+              <div class="card-b pad">
+                <div class="summary">
+                  <div class="summary-row"><span data-zh="资金池">Pool</span><span class="v">ETH · 0.1</span></div>
+                  <div class="summary-row"><span data-zh="提取金额">Amount</span><span class="v">0.1 ETH</span></div>
+                  <div class="summary-row"><span data-zh="中继费">Relayer fee</span><span class="v">0.00024 ETH</span></div>
+                  <div class="summary-row"><span data-zh="网络费">Network fee</span><span class="v">0.00031 ETH</span></div>
+                  <div class="summary-row"><span data-zh="预计到账">You receive</span><span class="v">0.09945 ETH</span></div>
+                  <div class="summary-row total"><span data-zh="匿名集">Anonymity set</span><span class="v">842</span></div>
+                </div>
+                <div class="approve" style="margin-top:12px"><div class="t" data-zh="合规检查">Compliance check</div><div class="v" data-zh="收款地址未命中制裁名单 · 提取额度正常">Recipient not on sanctions list · withdrawal limit normal</div></div>
+                <div class="card-note" style="margin-top:9px" data-zh="中继看不到 note，也无法控制你的资金。">The relayer cannot see the note or control your funds.</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="安全提醒">Safety</div><div class="right"><span class="badge danger"><span class="dot"></span><span data-zh="不要分享">do not share</span></span></div></div>
+              <div class="card-b"><div class="note-warning"><svg class="ico"><use href="#i-alert"></use></svg><span data-zh="任何人拿到 note 都可以提取资金。不要粘贴到网站、聊天或 AI 工具中。">Anyone with the note can withdraw the funds. Never paste it into websites, chats or AI tools.</span></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= POOLS ================= -->
+      <section class="screen" id="pools" data-title="Pools" data-title-zh="资金池">
+        <div class="page-head">
+          <div><div class="eyebrow" data-zh="流动性 · 资金池">Liquidity · Pools</div><h1 data-zh="资金池">Pools</h1><p class="page-sub" data-zh="固定面额、独立匿名集。选择池子前先看匿名集大小与成熟期。">Fixed denominations with independent anonymity sets. Check set size and maturity before choosing a pool.</p></div>
+          <div class="page-actions"><button class="btn"><svg class="ico"><use href="#i-refresh"></use></svg><span data-zh="刷新">Refresh</span></button><button class="btn btn-primary" data-screen="deposit"><svg class="ico"><use href="#i-plus"></use></svg><span data-zh="存入">Deposit</span></button></div>
+        </div>
+
+        <div class="pool-grid" style="margin-bottom:14px">
+          <div class="card pool-card"><div class="pool-top"><div class="asset-icon eth"><svg class="ico"><use href="#i-eth"></use></svg></div><div><div class="pool-name">ETH · 0.1</div><div class="pool-sub" data-zh="30 分钟成熟期">30m maturity</div></div><span class="badge ok" style="margin-left:auto"><span class="dot"></span><span data-zh="活跃">active</span></span></div><div class="pool-metrics"><div class="pool-metric"><div class="v">842</div><div class="l" data-zh="匿名集">anonymity set</div></div><div class="pool-metric"><div class="v">0.24%</div><div class="l" data-zh="协议费">protocol fee</div></div><div class="pool-metric"><div class="v">1.82M</div><div class="l" data-zh="流动性">liquidity</div></div><div class="pool-metric"><div class="v">0.1 ETH</div><div class="l" data-zh="固定面额">denomination</div></div></div><div class="pool-foot"><button class="btn btn-sm" style="flex:1" data-screen="deposit" data-zh="存入">Deposit</button><button class="btn btn-sm" style="flex:1" data-screen="withdraw" data-zh="提取">Withdraw</button></div></div>
+          <div class="card pool-card"><div class="pool-top"><div class="asset-icon eth"><svg class="ico"><use href="#i-eth"></use></svg></div><div><div class="pool-name">ETH · 1.0</div><div class="pool-sub" data-zh="2 小时成熟期">2h maturity</div></div><span class="badge ok" style="margin-left:auto"><span class="dot"></span><span data-zh="活跃">active</span></span></div><div class="pool-metrics"><div class="pool-metric"><div class="v">316</div><div class="l" data-zh="匿名集">anonymity set</div></div><div class="pool-metric"><div class="v">0.22%</div><div class="l" data-zh="协议费">protocol fee</div></div><div class="pool-metric"><div class="v">1.94M</div><div class="l" data-zh="流动性">liquidity</div></div><div class="pool-metric"><div class="v">1.0 ETH</div><div class="l" data-zh="固定面额">denomination</div></div></div><div class="pool-foot"><button class="btn btn-sm" style="flex:1" data-screen="deposit" data-zh="存入">Deposit</button><button class="btn btn-sm" style="flex:1" data-screen="withdraw" data-zh="提取">Withdraw</button></div></div>
+          <div class="card pool-card"><div class="pool-top"><div class="asset-icon eth"><svg class="ico"><use href="#i-eth"></use></svg></div><div><div class="pool-name">ETH · 10</div><div class="pool-sub" data-zh="6 小时成熟期">6h maturity</div></div><span class="badge warn" style="margin-left:auto"><span class="dot"></span><span data-zh="匿名集偏小">low set</span></span></div><div class="pool-metrics"><div class="pool-metric"><div class="v">64</div><div class="l" data-zh="匿名集">anonymity set</div></div><div class="pool-metric"><div class="v">0.20%</div><div class="l" data-zh="协议费">protocol fee</div></div><div class="pool-metric"><div class="v">0.44M</div><div class="l" data-zh="流动性">liquidity</div></div><div class="pool-metric"><div class="v">10 ETH</div><div class="l" data-zh="固定面额">denomination</div></div></div><div class="pool-foot"><button class="btn btn-sm" style="flex:1" data-screen="deposit" data-zh="存入">Deposit</button><button class="btn btn-sm" style="flex:1" data-screen="withdraw" data-zh="提取">Withdraw</button></div></div>
+          <div class="card pool-card"><div class="pool-top"><div class="asset-icon usdc"><svg class="ico"><use href="#i-usdc"></use></svg></div><div><div class="pool-name">USDC · 100</div><div class="pool-sub" data-zh="30 分钟成熟期">30m maturity</div></div><span class="badge ok" style="margin-left:auto"><span class="dot"></span><span data-zh="活跃">active</span></span></div><div class="pool-metrics"><div class="pool-metric"><div class="v">124</div><div class="l" data-zh="匿名集">anonymity set</div></div><div class="pool-metric"><div class="v">0.28%</div><div class="l" data-zh="协议费">protocol fee</div></div><div class="pool-metric"><div class="v">0.38M</div><div class="l" data-zh="流动性">liquidity</div></div><div class="pool-metric"><div class="v">100 USDC</div><div class="l" data-zh="固定面额">denomination</div></div></div><div class="pool-foot"><button class="btn btn-sm" style="flex:1" data-screen="deposit" data-zh="存入">Deposit</button><button class="btn btn-sm" style="flex:1" data-screen="withdraw" data-zh="提取">Withdraw</button></div></div>
+          <div class="card pool-card"><div class="pool-top"><div class="asset-icon usdc"><svg class="ico"><use href="#i-usdc"></use></svg></div><div><div class="pool-name">USDC · 1,000</div><div class="pool-sub" data-zh="2 小时成熟期">2h maturity</div></div><span class="badge warn" style="margin-left:auto"><span class="dot"></span><span data-zh="匿名集偏小">low set</span></span></div><div class="pool-metrics"><div class="pool-metric"><div class="v">48</div><div class="l" data-zh="匿名集">anonymity set</div></div><div class="pool-metric"><div class="v">0.25%</div><div class="l" data-zh="协议费">protocol fee</div></div><div class="pool-metric"><div class="v">0.21M</div><div class="l" data-zh="流动性">liquidity</div></div><div class="pool-metric"><div class="v">1,000 USDC</div><div class="l" data-zh="固定面额">denomination</div></div></div><div class="pool-foot"><button class="btn btn-sm" style="flex:1" data-screen="deposit" data-zh="存入">Deposit</button><button class="btn btn-sm" style="flex:1" data-screen="withdraw" data-zh="提取">Withdraw</button></div></div>
+          <div class="card pool-card"><div class="pool-top"><div class="asset-icon btc"><svg class="ico"><use href="#i-btc"></use></svg></div><div><div class="pool-name">tBTC · 0.01</div><div class="pool-sub" data-zh="2 小时成熟期">2h maturity</div></div><span class="badge info" style="margin-left:auto"><span class="dot"></span><span data-zh="测试资产">test asset</span></span></div><div class="pool-metrics"><div class="pool-metric"><div class="v">22</div><div class="l" data-zh="匿名集">anonymity set</div></div><div class="pool-metric"><div class="v">0.30%</div><div class="l" data-zh="协议费">protocol fee</div></div><div class="pool-metric"><div class="v">0.03M</div><div class="l" data-zh="流动性">liquidity</div></div><div class="pool-metric"><div class="v">0.01 tBTC</div><div class="l" data-zh="固定面额">denomination</div></div></div><div class="pool-foot"><button class="btn btn-sm" style="flex:1" data-screen="deposit" data-zh="存入">Deposit</button><button class="btn btn-sm" style="flex:1" data-screen="withdraw" data-zh="提取">Withdraw</button></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><div class="card-title" data-zh="池子规则">Pool rules</div><div class="right"><span class="badge info"><span data-zh="固定面额">fixed denomination</span></span></div></div>
+          <div class="card-b"><div class="how-grid"><div class="how-step"><div class="how-title" data-zh="固定面额">Fixed denomination</div><div class="how-text" data-zh="不同面额不混合。拆分或合并会削弱匿名集。">Denominations are not mixed. Splitting or merging weakens the anonymity set.</div></div><div class="how-step"><div class="how-title" data-zh="成熟期">Maturity period</div><div class="how-text" data-zh="存入后需等待成熟期才能提取，降低时间关联。">A maturity period reduces timing correlation between deposit and withdrawal.</div></div><div class="how-step"><div class="how-title" data-zh="合规检查">Compliance checks</div><div class="how-text" data-zh="存入与提取都会执行制裁名单与额度检查。仅限测试网。">Sanctions and limit checks run on deposit and withdrawal. Testnet only.</div></div></div></div>
+        </div>
+      </section>
+
+      <!-- ================= ACTIVITY ================= -->
+      <section class="screen" id="activity" data-title="Activity" data-title-zh="活动">
+        <div class="page-head">
+          <div><div class="eyebrow" data-zh="账户 · 活动">Account · Activity</div><h1 data-zh="活动">Activity</h1><p class="page-sub" data-zh="你的存入与提取记录。只显示你自己的 note 与状态，不公开对手方。">Your deposits and withdrawals. Only your notes and status are shown; counterparties are never exposed.</p></div>
+          <div class="page-actions"><button class="btn"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="导出记录">Export</span></button><button class="btn btn-primary" data-screen="deposit"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="存入">Deposit</span></button></div>
+        </div>
+        <div class="tabs"><button class="tab active" data-zh="全部">All</button><button class="tab" data-zh="存入">Deposits</button><button class="tab" data-zh="提取">Withdrawals</button></div>
+
+        <div class="grid main-grid">
+          <div class="card span-8">
+            <div class="card-h"><div class="card-title" data-zh="你的活动">Your activity</div><div class="right"><span class="badge muted" data-zh="本地同步">local sync</span></div></div>
+            <div class="card-b" style="padding-top:0">
+              <div class="row" style="padding-top:8px"><div class="activity-icon in"><svg class="ico"><use href="#i-download"></use></svg></div><div class="row-main"><div class="row-title" data-zh="存入 ETH · 0.1">Deposit ETH · 0.1</div><div class="row-sub">note_01JB8Z4K · 2026-11-02 10:02</div></div><span class="badge ok"><span class="dot"></span><span data-zh="已确认">confirmed</span></span><span class="row-meta">0.1 ETH</span></div>
+              <div class="row"><div class="activity-icon out"><svg class="ico"><use href="#i-upload"></use></svg></div><div class="row-main"><div class="row-title" data-zh="提取 ETH · 1.0">Withdraw ETH · 1.0</div><div class="row-sub">note_01JB8Z9M · Relay-01</div></div><span class="badge ok"><span class="dot"></span><span data-zh="已确认">confirmed</span></span><span class="row-meta">1.0 ETH</span></div>
+              <div class="row"><div class="activity-icon in"><svg class="ico"><use href="#i-download"></use></svg></div><div class="row-main"><div class="row-title" data-zh="存入 USDC · 100">Deposit USDC · 100</div><div class="row-sub">note_01JB8ZA2 · 2026-11-02 09:41</div></div><span class="badge warn"><span class="dot"></span><span data-zh="等待中">pending</span></span><span class="row-meta">100 USDC</span></div>
+              <div class="row"><div class="activity-icon out"><svg class="ico"><use href="#i-upload"></use></svg></div><div class="row-main"><div class="row-title" data-zh="提取 ETH · 0.1">Withdraw ETH · 0.1</div><div class="row-sub">note_01JB8ZB7 · Relay-02</div></div><span class="badge ok"><span class="dot"></span><span data-zh="已确认">confirmed</span></span><span class="row-meta">0.1 ETH</span></div>
+              <div class="row"><div class="activity-icon in"><svg class="ico"><use href="#i-download"></use></svg></div><div class="row-main"><div class="row-title" data-zh="存入 ETH · 1.0">Deposit ETH · 1.0</div><div class="row-sub">note_01JB8ZC4 · 2026-11-01 18:22</div></div><span class="badge ok"><span class="dot"></span><span data-zh="已成熟">matured</span></span><span class="row-meta">1.0 ETH</span></div>
+              <div class="row"><div class="activity-icon out"><svg class="ico"><use href="#i-upload"></use></svg></div><div class="row-main"><div class="row-title" data-zh="提取 USDC · 100">Withdraw USDC · 100</div><div class="row-sub">note_01JB8ZD9 · Relay-03</div></div><span class="badge danger"><span class="dot"></span><span data-zh="已拒绝">rejected</span></span><span class="row-meta">100 USDC</span></div>
+            </div>
+          </div>
+
+          <div class="span-4" style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="Note 备份">Note backup</div><div class="right"><span class="badge warn"><span class="dot"></span><span data-zh="1 个未备份">1 unbacked</span></span></div></div>
+              <div class="card-b pad"><div class="card-note" data-zh="note_01JB8ZA2 尚未备份。丢失 note 将无法提取。">note_01JB8ZA2 has not been backed up. Without the note, withdrawal is impossible.</div><button class="btn" style="width:100%;margin-top:10px"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="导出加密备份">Export encrypted backup</span></button></div>
+            </div>
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="隐私状态">Privacy status</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="良好">good</span></span></div></div>
+              <div class="card-b"><div class="check-list"><div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="所有提取均使用新地址">All withdrawals used fresh addresses</span></div><div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="平均等待 4.2 小时">Average wait 4.2 hours</span></div><div class="check warn"><svg class="ico"><use href="#i-alert"></use></svg><span data-zh="1 笔活动与存入时间接近">1 withdrawal close to deposit time</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= RELAYERS ================= -->
+      <section class="screen" id="relayers" data-title="Relayers" data-title-zh="中继">
+        <div class="page-head">
+          <div><div class="eyebrow" data-zh="网络 · 中继">Network · Relayers</div><h1 data-zh="中继">Relayers</h1><p class="page-sub" data-zh="中继代你提交提取交易，看不到 note，也无法控制资金。">Relayers submit withdrawal transactions for you. They cannot see the note or control funds.</p></div>
+          <div class="page-actions"><button class="btn btn-primary" data-toast="Relayer onboarding is a prototype interaction."><svg class="ico"><use href="#i-plus"></use></svg><span data-zh="运行中继">Run a relayer</span></button></div>
+        </div>
+
+        <div class="grid main-grid">
+          <div class="card span-8">
+            <div class="card-h"><div class="card-title" data-zh="可用中继">Available relayers</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="6 在线">6 online</span></span></div></div>
+            <div class="card-b" style="padding-top:0">
+              <div class="relayer-row" style="padding-top:8px"><div class="relayer-avatar">R1</div><div class="relayer-main"><div class="relayer-name">Relay-01</div><div class="relayer-sub" data-zh="ETH / USDC · 99.98% 在线 · 38ms">ETH / USDC · 99.98% uptime · 38ms</div></div><span class="relayer-metric">0.24%</span><span class="badge ok"><span class="dot"></span><span data-zh="推荐">best</span></span><button class="btn btn-sm" data-screen="withdraw" data-zh="选择">Select</button></div>
+              <div class="relayer-row"><div class="relayer-avatar">R2</div><div class="relayer-main"><div class="relayer-name">Relay-02</div><div class="relayer-sub" data-zh="ETH · 99.95% 在线 · 21ms">ETH · 99.95% uptime · 21ms</div></div><span class="relayer-metric">0.30%</span><span class="badge info"><span data-zh="低延迟">fast</span></span><button class="btn btn-sm" data-screen="withdraw" data-zh="选择">Select</button></div>
+              <div class="relayer-row"><div class="relayer-avatar">R3</div><div class="relayer-main"><div class="relayer-name">Relay-03</div><div class="relayer-sub" data-zh="全部池子 · 99.89% 在线 · 64ms">All pools · 99.89% uptime · 64ms</div></div><span class="relayer-metric">0.35%</span><span class="badge muted"><span data-zh="社区">community</span></span><button class="btn btn-sm" data-screen="withdraw" data-zh="选择">Select</button></div>
+              <div class="relayer-row"><div class="relayer-avatar">R4</div><div class="relayer-main"><div class="relayer-name">Relay-04</div><div class="relayer-sub" data-zh="USDC / tBTC · 99.72% 在线 · 92ms">USDC / tBTC · 99.72% uptime · 92ms</div></div><span class="relayer-metric">0.28%</span><span class="badge warn"><span data-zh="较慢">slower</span></span><button class="btn btn-sm" data-screen="withdraw" data-zh="选择">Select</button></div>
+              <div class="relayer-row"><div class="relayer-avatar">R5</div><div class="relayer-main"><div class="relayer-name">Relay-05</div><div class="relayer-sub" data-zh="tBTC / USDC · 99.80% 在线 · 110ms">tBTC / USDC · 99.80% uptime · 110ms</div></div><span class="relayer-metric">0.32%</span><span class="badge info"><span data-zh="新">new</span></span><button class="btn btn-sm" data-screen="withdraw" data-zh="选择">Select</button></div>
+              <div class="relayer-row"><div class="relayer-avatar">R6</div><div class="relayer-main"><div class="relayer-name">Relay-06</div><div class="relayer-sub" data-zh="仅 ETH · 99.65% 在线 · 144ms">ETH only · 99.65% uptime · 144ms</div></div><span class="relayer-metric">0.26%</span><span class="badge muted"><span data-zh="较慢">slow</span></span><button class="btn btn-sm" data-screen="withdraw" data-zh="选择">Select</button></div>
+            </div>
+          </div>
+
+          <div class="span-4" style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="中继模型">Relayer model</div><div class="right"><span class="badge info"><span data-zh="非托管">non-custodial</span></span></div></div>
+              <div class="card-b"><div class="guard"><svg class="ico"><use href="#i-lock"></use></svg><span data-zh="看不到 note 或资金">Cannot see notes or funds</span></div><div class="guard"><svg class="ico"><use href="#i-lock"></use></svg><span data-zh="只提交已生成的证明">Only submits a generated proof</span></div><div class="guard"><svg class="ico"><use href="#i-lock"></use></svg><span data-zh="收取固定比例费用">Charges a fixed percentage fee</span></div><div class="guard"><svg class="ico"><use href="#i-lock"></use></svg><span data-zh="必须通过合规检查">Must pass compliance checks</span></div></div>
+            </div>
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="中继经济">Relayer economics</div></div>
+              <div class="card-b pad"><div class="summary"><div class="summary-row"><span data-zh="平均费率">Average fee</span><span class="v">0.28%</span></div><div class="summary-row"><span data-zh="24h 提取">24h withdrawals</span><span class="v">31</span></div><div class="summary-row"><span data-zh="中继收入">Relayer revenue</span><span class="v">$184.20</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= COMPLIANCE ================= -->
+      <section class="screen" id="compliance" data-title="Compliance" data-title-zh="合规">
+        <div class="page-head">
+          <div><div class="eyebrow" data-zh="信任 · 合规">Trust · Compliance</div><h1 data-zh="合规">Compliance</h1><p class="page-sub" data-zh="风险检查内置于存入与提取。仅测试网资产，不存在主网路径。">Risk checks are built into deposit and withdrawal. Testnet assets only; no mainnet path exists.</p></div>
+          <div class="page-actions"><span class="badge ok"><span class="dot"></span><span data-zh="强制执行">enforced</span></span><button class="btn"><svg class="ico"><use href="#i-doc"></use></svg><span data-zh="导出审计">Export audit</span></button></div>
+        </div>
+
+        <div class="warning"><svg class="ico"><use href="#i-alert"></use></svg><div><strong data-zh="仅测试网。">Testnet only.</strong> <span data-zh="不处理真实资金。合规检查与额度限制对测试网环境同样生效。">No real funds. Compliance checks and limits are enforced in the testnet environment as well.</span></div><div class="right badge testnet"><span data-zh="主网不可用">mainnet unavailable</span></div></div>
+
+        <div class="card stat-strip" style="padding-top:15px;padding-bottom:15px">
+          <div class="stat"><div class="stat-label" data-zh="筛查通过率">Screening pass</div><div class="stat-value" style="color:var(--ok)">100%</div><div class="stat-delta" data-zh="最近 30 天">last 30 days</div></div>
+          <div class="stat"><div class="stat-label" data-zh="每日额度">Daily limit</div><div class="stat-value">72%</div><div class="stat-delta" data-zh="剩余 28%">28% remaining</div></div>
+          <div class="stat"><div class="stat-label" data-zh="司法辖区">Jurisdiction</div><div class="stat-value" style="font-size:20px" data-zh="允许">Allowed</div><div class="stat-delta" data-zh="测试网访问">testnet access</div></div>
+          <div class="stat"><div class="stat-label" data-zh="最近审计">Last audit</div><div class="stat-value" style="font-size:20px">2026-10-31</div><div class="stat-delta" data-zh="无未关闭问题">no open issues</div></div>
+        </div>
+
+        <div class="grid main-grid">
+          <div class="card span-7">
+            <div class="card-h"><div class="card-title" data-zh="风险策略">Risk policy</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="已启用">active</span></span></div></div>
+            <div class="card-b">
+              <div class="check-list">
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="存入与提取时执行制裁名单筛查">Sanctions screening on deposit and withdrawal</span></div>
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="按账户与池子的每日额度">Daily limits per account and pool</span></div>
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="阻断受限司法辖区">Blocked jurisdictions</span></div>
+                <div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="中继必须通过合规检查">Relayers must pass compliance checks</span></div>
+                <div class="check warn"><svg class="ico"><use href="#i-alert"></use></svg><span data-zh="高风险地址进入人工复核">High-risk addresses require manual review</span></div>
+              </div>
+              <div class="grid g-2" style="margin-top:14px">
+                <div class="how-step"><div class="how-title" data-zh="存入检查">Deposit checks</div><div class="how-text" data-zh="地址筛查、额度、司法辖区、池子容量。">Address screening, limits, jurisdiction, pool capacity.</div></div>
+                <div class="how-step"><div class="how-title" data-zh="提取检查">Withdrawal checks</div><div class="how-text" data-zh="收款地址筛查、note 完整性、中继状态。">Recipient screening, note integrity, relayer status.</div></div>
+              </div>
+              <div style="margin-top:14px">
+                <div class="stat-label" style="margin-bottom:7px" data-zh="额度">Limits</div>
+                <div class="progress-row" style="margin-bottom:8px"><span class="row-sub" style="width:86px" data-zh="每日存入">Daily deposit</span><div class="progress"><i style="width:72%"></i></div><span class="row-meta">72%</span></div>
+                <div class="progress-row" style="margin-bottom:8px"><span class="row-sub" style="width:86px" data-zh="每日提取">Daily withdrawal</span><div class="progress"><i style="width:41%"></i></div><span class="row-meta">41%</span></div>
+                <div class="progress-row"><span class="row-sub" style="width:86px" data-zh="单笔上限">Per transaction</span><div class="progress"><i style="width:100%"></i></div><span class="row-meta">10k tUSD</span></div>
+              </div>
+              <div style="margin-top:13px">
+                <div class="stat-label" style="margin-bottom:6px" data-zh="筛查来源">Screening sources</div>
+                <div class="cap-list"><span class="chip">OFAC</span><span class="chip">EU</span><span class="chip">UN</span><span class="chip">chain analytics</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="span-5" style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="最近检查">Recent checks</div><div class="right"><span class="badge muted" data-zh="自动">automated</span></div></div>
+              <div class="card-b" style="padding-top:0">
+                <div class="row" style="padding-top:6px"><div class="row-main"><div class="row-title" data-zh="存入 · 0.1 ETH">Deposit · 0.1 ETH</div><div class="row-sub">note_01JB8Z4K</div></div><span class="badge ok"><span data-zh="通过">pass</span></span></div>
+                <div class="row"><div class="row-main"><div class="row-title" data-zh="提取 · 1.0 ETH">Withdraw · 1.0 ETH</div><div class="row-sub">note_01JB8Z9M</div></div><span class="badge ok"><span data-zh="通过">pass</span></span></div>
+                <div class="row"><div class="row-main"><div class="row-title" data-zh="提取 · 100 USDC">Withdraw · 100 USDC</div><div class="row-sub">note_01JB8ZD9</div></div><span class="badge danger"><span data-zh="拒绝">blocked</span></span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="审计日志">Audit log</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="不可变">immutable</span></span></div></div>
+              <div class="card-b"><div class="timeline"><div class="tl-item"><span class="tl-dot done"></span><div class="tl-title" data-zh="策略更新">Policy update</div><div class="tl-sub" data-zh="每日额度调整为 10,000 tUSD">Daily limit set to 10,000 tUSD</div><div class="tl-time">2026-10-31</div></div><div class="tl-item"><span class="tl-dot done"></span><div class="tl-title" data-zh="制裁名单同步">Sanctions list sync</div><div class="tl-sub" data-zh="版本 2026-10-30">Version 2026-10-30</div><div class="tl-time">2026-10-30</div></div><div class="tl-item"><span class="tl-dot done"></span><div class="tl-title" data-zh="外部审计">External audit</div><div class="tl-sub" data-zh="范围：池子合约与中继">Scope: pool contracts and relayers</div><div class="tl-time">2026-10-31</div></div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SETTINGS ================= -->
+      <section class="screen" id="settings" data-title="Settings" data-title-zh="设置">
+        <div class="page-head">
+          <div><div class="eyebrow" data-zh="系统 · 设置">System · Settings</div><h1 data-zh="设置">Settings</h1><p class="page-sub" data-zh="网络、note 备份、会话安全与界面偏好。没有主网选项。">Network, note backups, session security and interface preferences. There is no mainnet option.</p></div>
+          <div class="page-actions"><span class="badge testnet"><span class="dot"></span><span data-zh="仅测试网">TESTNET ONLY</span></span></div>
+        </div>
+
+        <div class="grid main-grid">
+          <div class="span-8" style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="网络">Network</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="测试网">testnet</span></span></div></div>
+              <div class="card-b pad">
+                <div class="choice-grid">
+                  <div class="choice active"><div class="t">Ethereum Sepolia</div><div class="s">11155111 · <span data-zh="当前网络">current</span></div></div>
+                  <div class="choice"><div class="t">Local Anvil</div><div class="s">31337 · <span data-zh="仅本地">local only</span></div></div>
+                </div>
+                <div class="card-note" style="margin-top:9px" data-zh="主网网络不在注册表中，无法选择或连接。">Mainnet networks are not in the registry and cannot be selected or reached.</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="Note 备份">Note backup</div><div class="right"><span class="badge warn"><span class="dot"></span><span data-zh="1 个未备份">1 unbacked</span></span></div></div>
+              <div class="card-b pad">
+                <div class="summary"><div class="summary-row"><span data-zh="已备份 notes">Backed-up notes</span><span class="v">5</span></div><div class="summary-row"><span data-zh="未备份">Not backed up</span><span class="v" style="color:var(--warn)">1</span></div><div class="summary-row"><span data-zh="最后备份">Last backup</span><span class="v">2026-11-02 09:42</span></div></div>
+                <div style="display:flex;gap:7px;margin-top:11px"><button class="btn" style="flex:1"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="导出加密备份">Export encrypted backup</span></button><button class="btn" style="flex:1"><svg class="ico"><use href="#i-download"></use></svg><span data-zh="导入备份">Import backup</span></button></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="会话安全">Session security</div><div class="right"><span class="badge ok"><span class="dot"></span><span data-zh="已锁定">locked</span></span></div></div>
+              <div class="card-b"><div class="check-list"><div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="15 分钟无操作自动锁定">Auto-lock after 15 minutes</span></div><div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="note 不写入 localStorage">Notes are not written to localStorage</span></div><div class="check"><svg class="ico"><use href="#i-check"></use></svg><span data-zh="关闭页面后清除会话缓存">Session cache cleared on close</span></div></div></div>
+            </div>
+          </div>
+
+          <div class="span-4" style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="界面">Interface</div></div>
+              <div class="card-b pad">
+                <div class="summary"><div class="summary-row"><span data-zh="主题">Theme</span><span class="v"><span id="theme-label">Dark</span></span></div><div class="summary-row"><span data-zh="语言">Language</span><span class="v"><span id="lang-label">English</span></span></div><div class="summary-row"><span data-zh="测试网标识">Testnet badge</span><span class="v" data-zh="始终显示">always visible</span></div></div>
+                <div class="card-note" style="margin-top:9px" data-zh="主题与语言可在顶部栏随时切换。">Theme and language can be changed from the top bar at any time.</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h"><div class="card-title" data-zh="关于">About</div></div>
+              <div class="card-b pad"><div class="summary"><div class="summary-row"><span data-zh="版本">Version</span><span class="v">v0.2.0</span></div><div class="summary-row"><span data-zh="环境">Environment</span><span class="v">testnet</span></div><div class="summary-row"><span data-zh="池子">Pools</span><span class="v">6</span></div></div><div class="card-note" style="margin-top:9px" data-zh="VeilPool 是 VeilLab 的隐私池产品原型。">VeilPool is a private-pool product prototype by VeilLab.</div></div>
+            </div>
+            <div class="card" style="border-color:color-mix(in srgb,var(--danger) 24%,transparent)">
+              <div class="card-h"><div class="card-title" data-zh="危险区域">Danger zone</div><div class="right"><span class="badge danger"><span data-zh="不可撤销">irreversible</span></span></div></div>
+              <div class="card-b pad"><div class="card-note" data-zh="清除本地 note 缓存与会话。请先导出备份。">Clear local note cache and session. Export a backup first.</div><button class="btn btn-danger btn-sm" style="width:100%;margin-top:9px" data-toast="Local data clear is a prototype interaction."><span data-zh="清除本地数据">Clear local data</span></button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

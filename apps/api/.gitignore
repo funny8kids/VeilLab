@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+veilpool.db
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/

@@ -1,0 +1,22 @@
+{
+  "name": "veilpool-circuits",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "VeilPool Circom membership circuit spike (testnet-only, not production cryptography)",
+  "scripts": {
+    "fixture": "node scripts/gen-fixture.mjs",
+    "local-fixture": "node scripts/gen-local-fixture.mjs",
+    "export-local-proof": "node scripts/export-local-proof.mjs",
+    "local-withdrawal": "node scripts/make-local-withdrawal-payload.mjs",
+    "export-web": "node scripts/export-web-artifacts.mjs",
+    "canonicalize": "node scripts/canonicalize.mjs",
+    "negative": "node scripts/verify-negative.mjs",
+    "negative:witness": "node scripts/witness-negative.mjs"
+  },
+  "dependencies": {
+    "circomlib": "2.0.5",
+    "circomlibjs": "0.1.7",
+    "snarkjs": "0.7.6"
+  }
+}

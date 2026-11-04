@@ -1,0 +1,104 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install API dependencies
+        run: python -m pip install -r apps/api/requirements.txt
+      - name: API tests
+        run: python -m pytest apps/api -q
+
+  indexer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install indexer dependencies
+        run: python -m pip install -r apps/indexer/requirements.txt
+      - name: Indexer tests
+        run: python -m pytest apps/indexer -q
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install web dependencies
+        working-directory: apps/web
+        run: npm ci
+      - name: Web build
+        working-directory: apps/web
+        run: npm run build
+      - name: Web tests
+        working-directory: apps/web
+        run: npm test
+
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Install forge-std
+        working-directory: contracts
+        run: forge install foundry-rs/forge-std --no-commit
+      - name: Contract tests
+        working-directory: contracts
+        run: forge test -vvv
+      - name: Contract format check
+        working-directory: contracts
+        run: forge fmt --check
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            apps/web/package-lock.json
+            tests/e2e/package-lock.json
+      - name: Install API dependencies
+        run: python -m pip install -r apps/api/requirements.txt
+      - name: Install web dependencies
+        working-directory: apps/web
+        run: npm ci
+      - name: Install E2E dependencies
+        working-directory: tests/e2e
+        run: npm ci
+      - name: Install Playwright Chromium
+        working-directory: tests/e2e
+        run: npx playwright install --with-deps chromium
+      - name: Playwright smoke tests
+        working-directory: tests/e2e
+        run: npm test
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check local Markdown links
+        run: python scripts/check_docs.py

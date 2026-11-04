@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
+apps/api/veilpool.db
+
+# Node
+node_modules/
+dist/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# Foundry / Solidity
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Ad-hoc compiler artifacts at the repository root
+/*.bin
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
